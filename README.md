@@ -163,4 +163,4 @@ results = run_pipeline()
 
 ## Author
 
-- Haris Mehmood - harismehmood948@gmail.com
+- Hafiz Haris Mehmood - harismehmood948@gmail.com
