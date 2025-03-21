@@ -1,145 +1,166 @@
 # SMS Spam Classifier
 
-A machine learning application that classifies SMS messages as spam or ham (not spam) using Natural Language Processing (NLP) and Naive Bayes classification algorithms.
+A machine learning project that classifies SMS messages as spam or legitimate (ham) using Natural Language Processing (NLP) techniques.
 
 ## Project Overview
 
-This project implements a complete end-to-end machine learning pipeline for SMS spam classification, including:
+This project implements an end-to-end machine learning pipeline for SMS spam detection with the following components:
 
 - Data ingestion and cleaning
-- Text preprocessing and feature engineering
-- Model training with multiple Naive Bayes classifiers
+- Text preprocessing with NLP techniques
+- Feature engineering
+- Model training with various Naive Bayes classifiers
 - Model evaluation and selection
 - Web application for real-time predictions
-- CI/CD pipeline with GitHub Actions
 
-## Getting Started
+## Table of Contents
 
-### Prerequisites
+- [Installation](#installation)
+- [Project Structure](#project-structure)
+- [Data Pipeline](#data-pipeline)
+- [Model](#model)
+- [Web Application](#web-application)
+- [Usage](#usage)
+- [Testing](#testing)
 
-- Python 3.7+
+## Installation
+
+### Requirements
+
+- Python 3.7 or higher
 - pip package manager
-- virtualenv (optional but recommended)
 
-### Installation
+### Setup
 
-#### Using virtual environment (recommended for development)
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/sms-spam-classifier.git
+   cd sms-spam-classifier
+   ```
 
-**For Windows:**
-```bash
-# Run the setup script
-setup_env.bat
-```
+2. Create and activate a virtual environment (recommended):
+   ```
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-**For macOS/Linux:**
-```bash
-# Make the script executable
-chmod +x setup_env.sh
-
-# Run the setup script
-./setup_env.sh
-```
-
-## Usage
-
-### Running the Streamlit Web App
-
-```bash
-# Activate virtual environment first
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-
-# Run the Streamlit app
-streamlit run app.py
-```
-
-The app will be available at http://localhost:8501
-
-### Running the Complete Pipeline
-
-To run the full data processing and model training pipeline:
-
-```bash
-# Activate virtual environment first
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-
-# Run the pipeline
-python src/pipeline.py
-```
+3. Install the package and dependencies:
+   ```
+   pip install -e .
+   ```
 
 ## Project Structure
 
 ```
-SMS_Spam_Classifier/
-├── .github/            # GitHub Actions workflows
-├── data/               # Data directories
-│   ├── raw/            # Original dataset
-│   ├── preprocessed/   # Cleaned dataset
-│   ├── processed/      # Feature-engineered dataset
-│   └── transformed/    # Train-test split datasets
-├── model/              # Saved model and vectorizer
-├── notebooks/          # Jupyter notebooks for exploration
-├── tests/              # Unit tests
-├── src/                # Source code
-│   ├── components/     # Pipeline components
-│   │   ├── data_ingestion.py
-│   │   ├── data_preprocessing.py
-│   │   ├── data_transformation.py
-│   │   └── model_building.py
-│   ├── pipeline.py     # Complete pipeline
-│   ├── logger.py       # Logging utilities
-│   └── exception.py    # Custom exception handling
-├── app.py              # Streamlit web application
-├── requirements.txt    # Project dependencies
-├── setup.py            # Package installation setup
-└── README.md           # Project documentation
+sms-spam-classifier/
+│
+├── app.py                     # Streamlit web application
+├── setup.py                   # Package installation configuration
+├── requirements.txt           # Project dependencies
+│
+├── data/                      # Data directory
+│   ├── raw/                   # Original dataset
+│   ├── preprocessed/          # Preprocessed data
+│   ├── processed/             # Processed data with features
+│   └── transformed/           # Train-test split data
+│
+├── model/                     # Saved models
+│   ├── model.pkl              # Trained model
+│   └── vectorizer.pkl         # TF-IDF vectorizer
+│
+├── notebooks/                 # Jupyter notebooks for exploration
+│
+├── src/                       # Source code
+│   ├── __init__.py
+│   ├── logger.py              # Logging utility
+│   ├── exception.py           # Custom exception handling
+│   ├── pipeline.py            # End-to-end ML pipeline
+│   ├── predict.py             # Prediction module
+│   │
+│   └── components/            # Pipeline components
+│       ├── __init__.py
+│       ├── data_ingestion.py  # Data loading and cleaning
+│       ├── data_preprocessing.py  # Text preprocessing and feature creation
+│       ├── data_transformation.py  # Train-test splitting
+│       └── model_building.py  # Model training and evaluation
+│
+└── logs/                      # Log files
 ```
 
-## CI/CD Pipeline
+## Data Pipeline
 
-This project uses GitHub Actions for Continuous Integration and Continuous Deployment:
+The pipeline consists of the following stages:
 
-1. **Testing**: Runs linting and unit tests
-2. **Deployment**: Deploys to Heroku for production
+1. **Data Ingestion**: Reads and cleans the SMS dataset from source.
+2. **Data Preprocessing**: 
+   - Converts text to lowercase
+   - Tokenizes text
+   - Removes non-alphabetic characters
+   - Removes stopwords
+   - Applies stemming
+   - Adds features like text length, word count, and sentence count
+3. **Data Transformation**: Splits data into training (80%) and testing (20%) sets.
+4. **Model Building**: 
+   - Vectorizes text using TF-IDF
+   - Trains multiple Naive Bayes models
+   - Evaluates and selects the best model based on precision
 
-## Make Commands
+## Model
 
-The project includes a Makefile with helpful commands:
+The project uses the following models:
 
-```bash
-# Set up the environment
-make setup
+- Multinomial Naive Bayes
+- Gaussian Naive Bayes
+- Bernoulli Naive Bayes
 
-# Run tests
-make test
+These models are evaluated on precision, accuracy, recall, and F1 score, with the best model selected based on precision for spam detection.
 
-# Run linting
-make lint
+## Web Application
 
-# Run the app
-make run-app
+A Streamlit web application provides a user-friendly interface for:
 
-# Run the pipeline
-make run-pipeline
+- Entering SMS messages
+- Getting real-time spam classification predictions
+- Simple and intuitive UI for immediate feedback
 
-# Create necessary directories
-make create-dirs
+## Usage
+
+### Running the Pipeline
+
+To run the complete data pipeline:
+
+```
+python src/pipeline.py
 ```
 
-## Contributing
+This will:
+- Load and process the data
+- Train the models
+- Save the best model and vectorizer to the model/ directory
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+### Running the Web Application
 
-## License
+To launch the Streamlit application:
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+```
+streamlit run app.py
+```
 
-## Contact
+The application will be available at http://localhost:8501 by default.
 
-- **Hafiz Haris Mehmood** - harismehmood948@gmail.com
-- **Project Link**: [https://github.com/harismehmood948/sms-spam-classifier](https://github.com/harismehmood948/sms-spam-classifier) 
+### Package Functions
+
+After installation, you can use the package in Python:
+
+```python
+from src.pipeline import run_pipeline
+
+# Run the complete pipeline
+results = run_pipeline()
+```
+
+
+
+## Author
+
+- Haris Mehmood - harismehmood948@gmail.com
